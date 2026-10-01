@@ -6,10 +6,6 @@ import com.realestate.dto.SearchResponse;
 import com.realestate.entity.Listing;
 import com.realestate.repository.ListingRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ListingService {
 
     private final ListingRepository listingRepository;
@@ -62,17 +57,18 @@ public class ListingService {
                     .limit(pageSize)
                     .collect(Collectors.toList());
 
-            return SearchResponse.builder()
-                    .success(true)
-                    .data(SearchResponse.SearchData.builder()
-                            .listings(pageResults)
-                            .totalCount((long) totalCount)
-                            .pageNumber(pageNumber)
-                            .pageSize(pageSize)
-                            .totalPages(totalPages)
-                            .build())
-                    .timestamp(LocalDateTime.now())
-                    .build();
+            SearchResponse.SearchData data = new SearchResponse.SearchData();
+            data.setListings(pageResults);
+            data.setTotalCount((long) totalCount);
+            data.setPageNumber(pageNumber);
+            data.setPageSize(pageSize);
+            data.setTotalPages(totalPages);
+
+            SearchResponse response = new SearchResponse();
+            response.setSuccess(true);
+            response.setData(data);
+            response.setTimestamp(LocalDateTime.now());
+            return response;
 
         } catch (IllegalArgumentException e) {
             log.warn("Invalid search request: {}", e.getMessage());
@@ -114,11 +110,11 @@ public class ListingService {
     }
 
     private SearchResponse buildErrorResponse(String message) {
-        return SearchResponse.builder()
-                .success(false)
-                .errorMessage(message)
-                .timestamp(LocalDateTime.now())
-                .build();
+        SearchResponse response = new SearchResponse();
+        response.setSuccess(false);
+        response.setErrorMessage(message);
+        response.setTimestamp(LocalDateTime.now());
+        return response;
     }
 
     public void seedTestData() {
@@ -300,6 +296,5 @@ public class ListingService {
         );
 
         listingRepository.saveAll(testListings);
-        log.info("Test data seeded: {} listings", testListings.size());
     }
 }
