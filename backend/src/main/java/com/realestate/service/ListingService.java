@@ -29,18 +29,18 @@ public class ListingService {
             request.validate();
 
             List<Listing> allMatches = listingRepository.searchListingsNoPage(
-                request.city,
-                request.minPrice,
-                request.maxPrice,
-                request.minBedrooms,
-                request.keyword
+                request.getCity(),
+                request.getMinPrice(),
+                request.getMaxPrice(),
+                request.getMinBedrooms(),
+                request.getKeyword()
             );
 
             Map<String, Double> scores = rankingService.calculateScores(
                 allMatches,
-                request.targetBudget,
-                request.keyword,
-                request.minBedrooms
+                request.getTargetBudget(),
+                request.getKeyword(),
+                request.getMinBedrooms()
             );
 
             List<ListingDTO> rankedListings = allMatches.stream()
@@ -49,8 +49,8 @@ public class ListingService {
                     .collect(Collectors.toList());
 
             int totalCount = rankedListings.size();
-            int pageSize = request.pageSize;
-            int pageNumber = request.pageNumber;
+            int pageSize = request.getPageSize();
+            int pageNumber = request.getPageNumber();
             int totalPages = (totalCount + pageSize - 1) / pageSize;
 
             if (pageNumber > totalPages && totalCount > 0) {

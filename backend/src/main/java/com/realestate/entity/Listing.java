@@ -1,10 +1,7 @@
 package com.realestate.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,10 +13,13 @@ import java.time.LocalDateTime;
     @Index(name = "idx_bedrooms", columnList = "bedrooms"),
     @Index(name = "idx_status", columnList = "status")
 })
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Listing {
 
     @Id
