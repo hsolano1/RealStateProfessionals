@@ -1,0 +1,65 @@
+# Build
+target/
+dist/
+build/
+.gradle/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Maven
+.m2/
+pom.xml.tag
+pom.xml.releaseBackup
+release.properties
+release-pom.xml
+
+# Node
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Database
+postgres_data/
+*.db
+
+# Logs
+logs/
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IntelliJ
+*.iml
+*.iws
+*.ipr
+out/
+
+# macOS
+.AppleDouble
+.LSOverride
