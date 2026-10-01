@@ -71,10 +71,8 @@ public class ListingService {
             return response;
 
         } catch (IllegalArgumentException e) {
-            log.warn("Invalid search request: {}", e.getMessage());
             return buildErrorResponse(e.getMessage());
         } catch (Exception e) {
-            log.error("Unexpected error during search", e);
             return buildErrorResponse("An unexpected error occurred during search");
         }
     }
@@ -90,23 +88,23 @@ public class ListingService {
     }
 
     private ListingDTO convertToDTO(Listing listing, Double relevanceScore) {
-        return ListingDTO.builder()
-                .id(listing.getId())
-                .address(listing.getAddress())
-                .city(listing.getCity())
-                .state(listing.getState())
-                .zip(listing.getZip())
-                .price(listing.getPrice())
-                .bedrooms(listing.getBedrooms())
-                .bathrooms(listing.getBathrooms())
-                .sqft(listing.getSqft())
-                .latitude(listing.getLatitude())
-                .longitude(listing.getLongitude())
-                .listedDate(listing.getListedDate())
-                .status(listing.getStatus())
-                .description(listing.getDescription())
-                .relevanceScore(relevanceScore)
-                .build();
+        return new ListingDTO(
+                listing.getId(),
+                listing.getAddress(),
+                listing.getCity(),
+                listing.getState(),
+                listing.getZip(),
+                listing.getPrice(),
+                listing.getBedrooms(),
+                listing.getBathrooms(),
+                listing.getSqft(),
+                listing.getLatitude(),
+                listing.getLongitude(),
+                listing.getListedDate(),
+                listing.getStatus(),
+                listing.getDescription(),
+                relevanceScore
+        );
     }
 
     private SearchResponse buildErrorResponse(String message) {

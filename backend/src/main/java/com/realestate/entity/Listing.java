@@ -141,8 +141,4 @@ public class Listing {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-    @UniqueConstraint(name = "uk_source_id_system", columnNames = {"sourceId", "sourceSystem"})
-    public void validateUniqueConstraint() {
-    }
 }
