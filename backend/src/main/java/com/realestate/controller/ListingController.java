@@ -27,8 +27,8 @@ public class ListingController {
     @PostMapping("/listings/search")
     public ResponseEntity<SearchResponse> searchListings(@Valid @RequestBody SearchRequest request) {
         log.info("Search request received: city={}, minPrice={}, maxPrice={}, minBedrooms={}, keyword={}",
-                request.getCity(), request.getMinPrice(), request.getMaxPrice(),
-                request.getMinBedrooms(), request.getKeyword());
+                request.city, request.minPrice, request.maxPrice,
+                request.minBedrooms, request.keyword);
 
         SearchResponse response = listingService.search(request);
         return ResponseEntity.ok(response);
