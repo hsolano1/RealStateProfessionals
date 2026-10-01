@@ -123,176 +123,46 @@ public class ListingService {
         }
 
         List<Listing> testListings = Arrays.asList(
-            Listing.builder()
-                .sourceId("A1")
-                .sourceSystem("MLS_A")
-                .address("123 Main St, Apt 4B")
-                .city("Springfield")
-                .state("VA")
-                .zip("22150")
-                .price(new BigDecimal("450000"))
-                .bedrooms(2)
-                .bathrooms(1.5)
-                .sqft(980)
-                .latitude(38.7893)
-                .longitude(-77.1873)
-                .listedDate(java.time.LocalDate.of(2026, 8, 29))
-                .status("active")
-                .description("Bright top-floor condo near shops and transit. Pet friendly.")
-                .build(),
-            Listing.builder()
-                .sourceId("A2")
-                .sourceSystem("MLS_A")
-                .address("456 Oak Ave")
-                .city("Springfield")
-                .state("VA")
-                .zip("22150")
-                .price(new BigDecimal("525000"))
-                .bedrooms(3)
-                .bathrooms(2.0)
-                .sqft(1450)
-                .latitude(38.7791)
-                .longitude(-77.1901)
-                .listedDate(java.time.LocalDate.of(2026, 9, 2))
-                .status("active")
-                .description("Updated kitchen, fenced yard, close to schools.")
-                .build(),
-            Listing.builder()
-                .sourceId("A3")
-                .sourceSystem("MLS_A")
-                .address("789 Pine Rd")
-                .city("Fairfax")
-                .state("VA")
-                .zip("22030")
-                .price(new BigDecimal("399000"))
-                .bedrooms(2)
-                .bathrooms(1.0)
-                .sqft(850)
-                .latitude(38.8462)
-                .longitude(-77.3064)
-                .listedDate(java.time.LocalDate.of(2026, 9, 1))
-                .status("active")
-                .description("Cozy starter home, no pets.")
-                .build(),
-            Listing.builder()
-                .sourceId("A4")
-                .sourceSystem("MLS_A")
-                .address("22 Birch Ln")
-                .city("Reston")
-                .state("VA")
-                .zip("20190")
-                .price(new BigDecimal("610000"))
-                .bedrooms(4)
-                .bathrooms(3.0)
-                .sqft(2100)
-                .latitude(38.9586)
-                .longitude(-77.3570)
-                .listedDate(java.time.LocalDate.of(2026, 9, 3))
-                .status("active")
-                .description("Spacious family home near Reston Town Center. Pets welcome.")
-                .build(),
-            Listing.builder()
-                .sourceId("A5")
-                .sourceSystem("MLS_A")
-                .address("55 Elm Ct")
-                .city("Vienna")
-                .state("VA")
-                .zip("22180")
-                .price(new BigDecimal("470000"))
-                .bedrooms(3)
-                .bathrooms(2.0)
-                .sqft(1300)
-                .latitude(38.9012)
-                .longitude(-77.2653)
-                .listedDate(java.time.LocalDate.of(2026, 9, 4))
-                .status("active")
-                .description("Quiet cul-de-sac, walkable to Metro. No pets.")
-                .build(),
-            Listing.builder()
-                .sourceId("A6")
-                .sourceSystem("MLS_A")
-                .address("300 Cedar Blvd")
-                .city("Manassas")
-                .state("VA")
-                .zip("20110")
-                .price(new BigDecimal("415000"))
-                .bedrooms(3)
-                .bathrooms(2.0)
-                .sqft(1600)
-                .latitude(38.7509)
-                .longitude(-77.4753)
-                .listedDate(java.time.LocalDate.of(2026, 8, 10))
-                .status("active")
-                .description("Split-level home, large driveway, pets allowed.")
-                .build(),
-            Listing.builder()
-                .sourceId("A7")
-                .sourceSystem("MLS_A")
-                .address("42 Willow Way")
-                .city("Chantilly")
-                .state("VA")
-                .zip("20151")
-                .price(new BigDecimal("540000"))
-                .bedrooms(4)
-                .bathrooms(2.5)
-                .sqft(1950)
-                .latitude(38.8909)
-                .longitude(-77.4316)
-                .listedDate(java.time.LocalDate.of(2026, 7, 28))
-                .status("pending")
-                .description("Corner lot, recently painted, no pets due to HOA.")
-                .build(),
-            Listing.builder()
-                .sourceId("B7")
-                .sourceSystem("MLS_B")
-                .address("123 Main Street, Unit 4B")
-                .city("Springfield")
-                .state("VA")
-                .zip("22150")
-                .price(new BigDecimal("452000"))
-                .bedrooms(2)
-                .bathrooms(1.5)
-                .sqft(980)
-                .latitude(38.7893)
-                .longitude(-77.1873)
-                .listedDate(java.time.LocalDate.of(2026, 8, 27))
-                .status("active")
-                .description("Top floor condo, walk to shopping. Pets allowed.")
-                .build(),
-            Listing.builder()
-                .sourceId("B8")
-                .sourceSystem("MLS_B")
-                .address("456 Oak Avenue")
-                .city("Springfield")
-                .state("VA")
-                .zip("22151")
-                .price(new BigDecimal("527500"))
-                .bedrooms(3)
-                .bathrooms(2.0)
-                .sqft(1450)
-                .latitude(38.7791)
-                .longitude(-77.1901)
-                .listedDate(java.time.LocalDate.of(2026, 8, 30))
-                .status("active")
-                .description("Renovated kitchen, fenced backyard, near schools.")
-                .build(),
-            Listing.builder()
-                .sourceId("B10")
-                .sourceSystem("MLS_B")
-                .address("100 Maple Dr")
-                .city("Reston")
-                .state("VA")
-                .zip("20190")
-                .price(new BigDecimal("585000"))
-                .bedrooms(3)
-                .bathrooms(2.5)
-                .sqft(1900)
-                .latitude(38.9601)
-                .longitude(-77.3499)
-                .listedDate(java.time.LocalDate.of(2026, 8, 20))
-                .status("active")
-                .description("Townhome with 2-car garage, community pool.")
-                .build()
+            new Listing("A1", "MLS_A", "123 Main St, Apt 4B", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 980, 38.7893, -77.1873,
+                java.time.LocalDate.of(2026, 8, 29), "active",
+                "Bright top-floor condo near shops and transit. Pet friendly."),
+            new Listing("A2", "MLS_A", "456 Oak Ave", "Springfield", "VA", "22150",
+                new BigDecimal("525000"), 3, 2.0, 1450, 38.7791, -77.1901,
+                java.time.LocalDate.of(2026, 9, 2), "active",
+                "Updated kitchen, fenced yard, close to schools."),
+            new Listing("A3", "MLS_A", "789 Pine Rd", "Fairfax", "VA", "22030",
+                new BigDecimal("399000"), 2, 1.0, 850, 38.8462, -77.3064,
+                java.time.LocalDate.of(2026, 9, 1), "active",
+                "Cozy starter home, no pets."),
+            new Listing("A4", "MLS_A", "22 Birch Ln", "Reston", "VA", "20190",
+                new BigDecimal("610000"), 4, 3.0, 2100, 38.9586, -77.3570,
+                java.time.LocalDate.of(2026, 9, 3), "active",
+                "Spacious family home near Reston Town Center. Pets welcome."),
+            new Listing("A5", "MLS_A", "55 Elm Ct", "Vienna", "VA", "22180",
+                new BigDecimal("470000"), 3, 2.0, 1300, 38.9012, -77.2653,
+                java.time.LocalDate.of(2026, 9, 4), "active",
+                "Quiet cul-de-sac, walkable to Metro. No pets."),
+            new Listing("A6", "MLS_A", "300 Cedar Blvd", "Manassas", "VA", "20110",
+                new BigDecimal("415000"), 3, 2.0, 1600, 38.7509, -77.4753,
+                java.time.LocalDate.of(2026, 8, 10), "active",
+                "Split-level home, large driveway, pets allowed."),
+            new Listing("A7", "MLS_A", "42 Willow Way", "Chantilly", "VA", "20151",
+                new BigDecimal("540000"), 4, 2.5, 1950, 38.8909, -77.4316,
+                java.time.LocalDate.of(2026, 7, 28), "pending",
+                "Corner lot, recently painted, no pets due to HOA."),
+            new Listing("B7", "MLS_B", "123 Main Street, Unit 4B", "Springfield", "VA", "22150",
+                new BigDecimal("452000"), 2, 1.5, 980, 38.7893, -77.1873,
+                java.time.LocalDate.of(2026, 8, 27), "active",
+                "Top floor condo, walk to shopping. Pets allowed."),
+            new Listing("B8", "MLS_B", "456 Oak Avenue", "Springfield", "VA", "22151",
+                new BigDecimal("527500"), 3, 2.0, 1450, 38.7791, -77.1901,
+                java.time.LocalDate.of(2026, 8, 30), "active",
+                "Renovated kitchen, fenced backyard, near schools."),
+            new Listing("B10", "MLS_B", "100 Maple Dr", "Reston", "VA", "20190",
+                new BigDecimal("585000"), 3, 2.5, 1900, 38.9601, -77.3499,
+                java.time.LocalDate.of(2026, 8, 20), "active",
+                "Townhome with 2-car garage, community pool.")
         );
 
         listingRepository.saveAll(testListings);

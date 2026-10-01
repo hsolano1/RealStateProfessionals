@@ -2,37 +2,55 @@ package com.realestate.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class SearchRequest {
 
-    private BigDecimal minPrice;
-
-    private BigDecimal maxPrice;
+    public BigDecimal minPrice;
+    public BigDecimal maxPrice;
 
     @Min(value = 0, message = "Minimum bedrooms must be >= 0")
-    private Integer minBedrooms;
+    public Integer minBedrooms;
 
-    private String city;
-
-    private String keyword;
+    public String city;
+    public String keyword;
 
     @NotNull(message = "Target budget is required")
-    private BigDecimal targetBudget;
+    public BigDecimal targetBudget;
 
     @NotNull(message = "Page number is required")
     @Min(value = 1, message = "Page number must be >= 1")
-    private Integer pageNumber;
+    public Integer pageNumber;
 
     @NotNull(message = "Page size is required")
     @Min(value = 1, message = "Page size must be >= 1")
-    private Integer pageSize;
+    public Integer pageSize;
+
+    public SearchRequest() {}
+
+    public BigDecimal getMinPrice() { return minPrice; }
+    public void setMinPrice(BigDecimal minPrice) { this.minPrice = minPrice; }
+
+    public BigDecimal getMaxPrice() { return maxPrice; }
+    public void setMaxPrice(BigDecimal maxPrice) { this.maxPrice = maxPrice; }
+
+    public Integer getMinBedrooms() { return minBedrooms; }
+    public void setMinBedrooms(Integer minBedrooms) { this.minBedrooms = minBedrooms; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    public String getKeyword() { return keyword; }
+    public void setKeyword(String keyword) { this.keyword = keyword; }
+
+    public BigDecimal getTargetBudget() { return targetBudget; }
+    public void setTargetBudget(BigDecimal targetBudget) { this.targetBudget = targetBudget; }
+
+    public Integer getPageNumber() { return pageNumber; }
+    public void setPageNumber(Integer pageNumber) { this.pageNumber = pageNumber; }
+
+    public Integer getPageSize() { return pageSize; }
+    public void setPageSize(Integer pageSize) { this.pageSize = pageSize; }
 
     public void validate() {
         if (minPrice != null && maxPrice != null && minPrice.compareTo(maxPrice) > 0) {
