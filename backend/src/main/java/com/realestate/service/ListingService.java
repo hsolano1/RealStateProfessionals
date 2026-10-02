@@ -71,14 +71,11 @@ public class ListingService {
             return response;
 
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
             return buildErrorResponse(e.getMessage());
         } catch (NullPointerException e) {
-            e.printStackTrace();
-            return buildErrorResponse("Null value encountered: " + e.getMessage());
+            return buildErrorResponse("Invalid search parameters");
         } catch (Exception e) {
-            e.printStackTrace();
-            return buildErrorResponse("An unexpected error occurred: " + e.getClass().getSimpleName());
+            return buildErrorResponse("An unexpected error occurred");
         }
     }
 
