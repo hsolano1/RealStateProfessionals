@@ -4,7 +4,7 @@ import com.realestate.dto.ListingDTO;
 import com.realestate.dto.SearchRequest;
 import com.realestate.dto.SearchResponse;
 import com.realestate.entity.Listing;
-import com.realestate.repository.ListingRepository;
+import com.realestate.storage.ListingStorage;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class ListingService {
 
-    private final ListingRepository listingRepository;
+    private final ListingStorage listingStorage;
     private final RankingService rankingService;
 
-    public ListingService(ListingRepository listingRepository, RankingService rankingService) {
-        this.listingRepository = listingRepository;
+    public ListingService(ListingStorage listingStorage, RankingService rankingService) {
+        this.listingStorage = listingStorage;
         this.rankingService = rankingService;
     }
 
@@ -26,7 +26,7 @@ public class ListingService {
         try {
             request.validate();
 
-            List<Listing> allListings = listingRepository.findAll();
+            List<Listing> allListings = listingStorage.findAll();
             List<Listing> filteredListings = filterListings(allListings, request);
 
             Map<String, Double> scores = rankingService.calculateScores(
@@ -83,7 +83,7 @@ public class ListingService {
     }
 
     public ListingDTO getListingById(String id) {
-        return listingRepository.findById(id)
+        return listingStorage.findById(id)
                 .map(this::convertToDTO)
                 .orElse(null);
     }
@@ -139,7 +139,7 @@ public class ListingService {
     }
 
     public void seedTestData() {
-        if (listingRepository.count() > 0) {
+        if (listingStorage.count() > 0) {
             return;
         }
 
@@ -186,6 +186,6 @@ public class ListingService {
                 "Townhome with 2-car garage, community pool.")
         );
 
-        listingRepository.saveAll(testListings);
+        listingStorage.saveAll(testListings);
     }
 }
