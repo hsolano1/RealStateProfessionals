@@ -57,14 +57,56 @@
 
 ### Sensitive Data Management
 
+**Database Credentials Issue**:
+Currently, `docker-compose.yml` contains hardcoded database credentials:
+```yaml
+POSTGRES_PASSWORD: postgres
+SPRING_DATASOURCE_PASSWORD: postgres
+```
+
+**Production Solution - AWS Secrets Manager**:
+
+1. **Store secrets in AWS Secrets Manager**:
+   ```bash
+   aws secretsmanager create-secret --name realestate/db-password --secret-string "$(openssl rand -base64 32)"
+   ```
+
+2. **Update docker-compose.yml** to reference secrets:
+   ```yaml
+   services:
+     postgres:
+       environment:
+         POSTGRES_PASSWORD: ${DB_PASSWORD}
+     backend:
+       environment:
+         SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+   ```
+
+3. **Use .env file locally** (added to .gitignore):
+   ```bash
+   # .env (DO NOT COMMIT)
+   DB_PASSWORD=<strong-random-password-from-aws-secrets>
+   DB_USER=realestate_user
+   ```
+
+4. **In production** (AWS deployment):
+   - Use IAM roles for EC2/ECS
+   - Retrieve secrets at runtime from AWS Secrets Manager
+   - Never commit `.env` files or password files
+
+**For This Assessment**:
+- Hardcoded password is acceptable for demo purposes
+- In production, use AWS Secrets Manager integration
+- Example Terraform output could show how to fetch secrets
+
 **Credentials & Secrets**:
-- Database passwords: Use AWS Secrets Manager / HashiCorp Vault
+- Database passwords: Use AWS Secrets Manager / HashiCorp Vault (recommended)
 - API keys: Environment variables or secrets management service
 - SSL/TLS certificates: AWS Certificate Manager or Let's Encrypt
 
 **Current Setup**:
 - Standalone mode: JSON files (local, no credentials needed)
-- Docker mode: Can use AWS Secrets Manager or `.env` files (not committed)
+- Docker mode: Demo uses hardcoded password; production should use AWS Secrets Manager or `.env` files (not committed)
 
 ---
 
