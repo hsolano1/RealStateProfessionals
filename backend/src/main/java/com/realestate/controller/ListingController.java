@@ -5,7 +5,6 @@ import com.realestate.dto.SearchRequest;
 import com.realestate.dto.SearchResponse;
 import com.realestate.service.ListingService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +15,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ListingController {
 
     private final ListingService listingService;
+
+    public ListingController(ListingService listingService) {
+        this.listingService = listingService;
+    }
 
     @PostMapping("/listings/search")
     public ResponseEntity<SearchResponse> searchListings(@Valid @RequestBody SearchRequest request) {

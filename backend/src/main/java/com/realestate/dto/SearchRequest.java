@@ -15,7 +15,6 @@ public class SearchRequest {
     public String city;
     public String keyword;
 
-    @NotNull(message = "Target budget is required")
     public BigDecimal targetBudget;
 
     @NotNull(message = "Page number is required")

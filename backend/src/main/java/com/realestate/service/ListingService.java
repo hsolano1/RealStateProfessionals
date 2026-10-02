@@ -5,7 +5,6 @@ import com.realestate.dto.SearchRequest;
 import com.realestate.dto.SearchResponse;
 import com.realestate.entity.Listing;
 import com.realestate.repository.ListingRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,35 +12,36 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ListingService {
 
     private final ListingRepository listingRepository;
     private final RankingService rankingService;
 
+    public ListingService(ListingRepository listingRepository, RankingService rankingService) {
+        this.listingRepository = listingRepository;
+        this.rankingService = rankingService;
+    }
+
     public SearchResponse search(SearchRequest request) {
         try {
             request.validate();
 
-            List<Listing> allMatches = listingRepository.searchListingsNoPage(
-                request.getCity(),
-                request.getMinPrice(),
-                request.getMaxPrice(),
-                request.getMinBedrooms(),
-                request.getKeyword()
-            );
+            List<Listing> allListings = listingRepository.findAll();
+            List<Listing> filteredListings = filterListings(allListings, request);
 
             Map<String, Double> scores = rankingService.calculateScores(
-                allMatches,
+                filteredListings,
                 request.getTargetBudget(),
                 request.getKeyword(),
                 request.getMinBedrooms()
             );
 
-            List<ListingDTO> rankedListings = allMatches.stream()
-                    .map(listing -> convertToDTO(listing, scores.getOrDefault(listing.getId(), 0.0)))
-                    .sorted(Comparator.comparingDouble(ListingDTO::getRelevanceScore).reversed())
-                    .collect(Collectors.toList());
+            List<ListingDTO> rankedListings = new ArrayList<>();
+            for (Listing listing : filteredListings) {
+                ListingDTO dto = convertToDTO(listing, scores.getOrDefault(listing.getId(), 0.0));
+                rankedListings.add(dto);
+            }
+            rankedListings.sort(Comparator.comparingDouble(ListingDTO::getRelevanceScore).reversed());
 
             int totalCount = rankedListings.size();
             int pageSize = request.getPageSize();
@@ -71,9 +71,14 @@ public class ListingService {
             return response;
 
         } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             return buildErrorResponse(e.getMessage());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return buildErrorResponse("Null value encountered: " + e.getMessage());
         } catch (Exception e) {
-            return buildErrorResponse("An unexpected error occurred during search");
+            e.printStackTrace();
+            return buildErrorResponse("An unexpected error occurred: " + e.getClass().getSimpleName());
         }
     }
 
@@ -81,6 +86,24 @@ public class ListingService {
         return listingRepository.findById(id)
                 .map(this::convertToDTO)
                 .orElse(null);
+    }
+
+    private List<Listing> filterListings(List<Listing> listings, SearchRequest request) {
+        return listings.stream()
+                .filter(l -> {
+                    if (request.getCity() != null && !l.getCity().equalsIgnoreCase(request.getCity())) return false;
+                    if (request.getMinPrice() != null && l.getPrice().compareTo(request.getMinPrice()) < 0) return false;
+                    if (request.getMaxPrice() != null && l.getPrice().compareTo(request.getMaxPrice()) > 0) return false;
+                    if (request.getMinBedrooms() != null && l.getBedrooms() < request.getMinBedrooms()) return false;
+                    if (request.getKeyword() != null) {
+                        String keyword = request.getKeyword().toLowerCase();
+                        boolean descMatch = l.getDescription() != null && l.getDescription().toLowerCase().contains(keyword);
+                        boolean addrMatch = l.getAddress() != null && l.getAddress().toLowerCase().contains(keyword);
+                        if (!descMatch && !addrMatch) return false;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
     }
 
     private ListingDTO convertToDTO(Listing listing) {

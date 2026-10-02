@@ -34,13 +34,9 @@ class RankingServiceTest {
 
     @Test
     void testCalculateScoresWithPerfectMatch() {
-        Listing listing = Listing.builder()
-                .id("1")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Pet friendly home")
-                .build();
+        Listing listing = new Listing("src1", "MLS", "123 Main St", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Pet friendly home");
+        listing.setId("1");
 
         Map<String, Double> scores = rankingService.calculateScores(
                 Arrays.asList(listing),
@@ -55,21 +51,13 @@ class RankingServiceTest {
 
     @Test
     void testCalculateScoresWithPriceDeviation() {
-        Listing listing1 = Listing.builder()
-                .id("1")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Home")
-                .build();
+        Listing listing1 = new Listing("src1", "MLS", "123 Main St", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        listing1.setId("1");
 
-        Listing listing2 = Listing.builder()
-                .id("2")
-                .price(new BigDecimal("500000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Home")
-                .build();
+        Listing listing2 = new Listing("src2", "MLS", "456 Oak Ave", "Springfield", "VA", "22150",
+                new BigDecimal("500000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        listing2.setId("2");
 
         Map<String, Double> scores = rankingService.calculateScores(
                 Arrays.asList(listing1, listing2),
@@ -83,21 +71,13 @@ class RankingServiceTest {
 
     @Test
     void testCalculateScoresWithRecency() {
-        Listing recent = Listing.builder()
-                .id("1")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Home")
-                .build();
+        Listing recent = new Listing("src1", "MLS", "123 Main St", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        recent.setId("1");
 
-        Listing old = Listing.builder()
-                .id("2")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now().minusDays(100))
-                .bedrooms(2)
-                .description("Home")
-                .build();
+        Listing old = new Listing("src2", "MLS", "456 Oak Ave", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now().minusDays(100), "active", "Home");
+        old.setId("2");
 
         Map<String, Double> scores = rankingService.calculateScores(
                 Arrays.asList(recent, old),
@@ -111,29 +91,17 @@ class RankingServiceTest {
 
     @Test
     void testCalculateScoresWithBedroomMatch() {
-        Listing exact = Listing.builder()
-                .id("1")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Home")
-                .build();
+        Listing exact = new Listing("src1", "MLS", "123 Main St", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        exact.setId("1");
 
-        Listing excess = Listing.builder()
-                .id("2")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(4)
-                .description("Home")
-                .build();
+        Listing excess = new Listing("src2", "MLS", "456 Oak Ave", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 4, 2.5, 1500, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        excess.setId("2");
 
-        Listing insufficient = Listing.builder()
-                .id("3")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(1)
-                .description("Home")
-                .build();
+        Listing insufficient = new Listing("src3", "MLS", "789 Pine Rd", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 1, 1.0, 800, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        insufficient.setId("3");
 
         Map<String, Double> scores = rankingService.calculateScores(
                 Arrays.asList(exact, excess, insufficient),
@@ -148,29 +116,17 @@ class RankingServiceTest {
 
     @Test
     void testCalculateScoresWithKeywordMatch() {
-        Listing fullMatch = Listing.builder()
-                .id("1")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Pet friendly home with parking")
-                .build();
+        Listing fullMatch = new Listing("src1", "MLS", "123 Main St", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Pet friendly home with parking");
+        fullMatch.setId("1");
 
-        Listing partialMatch = Listing.builder()
-                .id("2")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Great home with garden")
-                .build();
+        Listing partialMatch = new Listing("src2", "MLS", "456 Oak Ave", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Great home with garden");
+        partialMatch.setId("2");
 
-        Listing noMatch = Listing.builder()
-                .id("3")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Nice house")
-                .build();
+        Listing noMatch = new Listing("src3", "MLS", "789 Pine Rd", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Nice house");
+        noMatch.setId("3");
 
         Map<String, Double> scores = rankingService.calculateScores(
                 Arrays.asList(fullMatch, partialMatch, noMatch),
@@ -185,13 +141,9 @@ class RankingServiceTest {
 
     @Test
     void testCalculateScoresScaleIsBetweenZeroAndHundred() {
-        Listing listing = Listing.builder()
-                .id("1")
-                .price(new BigDecimal("450000"))
-                .listedDate(LocalDate.now())
-                .bedrooms(2)
-                .description("Home")
-                .build();
+        Listing listing = new Listing("src1", "MLS", "123 Main St", "Springfield", "VA", "22150",
+                new BigDecimal("450000"), 2, 1.5, 1000, 38.78, -77.18, LocalDate.now(), "active", "Home");
+        listing.setId("1");
 
         Map<String, Double> scores = rankingService.calculateScores(
                 Arrays.asList(listing),

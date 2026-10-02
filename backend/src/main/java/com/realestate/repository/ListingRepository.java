@@ -29,8 +29,8 @@ public interface ListingRepository extends JpaRepository<Listing, String> {
         AND (:maxPrice IS NULL OR l.price <= :maxPrice)
         AND (:minBedrooms IS NULL OR l.bedrooms >= :minBedrooms)
         AND (:keyword IS NULL OR
-             LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
-             OR LOWER(l.address) LIKE LOWER(CONCAT('%', :keyword, '%')))
+             (LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+              OR LOWER(l.address) LIKE LOWER(CONCAT('%', :keyword, '%'))))
         ORDER BY l.listedDate DESC
         """)
     Page<Listing> searchListings(
@@ -49,8 +49,8 @@ public interface ListingRepository extends JpaRepository<Listing, String> {
         AND (:maxPrice IS NULL OR l.price <= :maxPrice)
         AND (:minBedrooms IS NULL OR l.bedrooms >= :minBedrooms)
         AND (:keyword IS NULL OR
-             LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
-             OR LOWER(l.address) LIKE LOWER(CONCAT('%', :keyword, '%')))
+             (LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+              OR LOWER(l.address) LIKE LOWER(CONCAT('%', :keyword, '%'))))
         """)
     List<Listing> searchListingsNoPage(
         @Param("city") String city,

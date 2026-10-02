@@ -42,16 +42,16 @@ public class Listing {
     @Column(nullable = false)
     private Integer bedrooms;
 
-    @Column(nullable = false, precision = 3, scale = 1)
+    @Column(nullable = false)
     private Double bathrooms;
 
     @Column(nullable = false)
     private Integer sqft;
 
-    @Column(precision = 9, scale = 6)
+    @Column
     private Double latitude;
 
-    @Column(precision = 9, scale = 6)
+    @Column
     private Double longitude;
 
     @Column(nullable = false)
