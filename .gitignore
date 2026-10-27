@@ -63,3 +63,4 @@ out/
 # macOS
 .AppleDouble
 .LSOverride
+coverage/

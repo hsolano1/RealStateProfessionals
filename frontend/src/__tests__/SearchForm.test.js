@@ -7,7 +7,7 @@ describe('SearchForm', () => {
     const mockOnSearch = jest.fn();
     render(<SearchForm onSearch={mockOnSearch} />);
 
-    expect(screen.getByText('Search Properties')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Search Properties' })).toBeInTheDocument();
     expect(screen.getByLabelText(/Target Budget/i)).toBeInTheDocument();
   });
 
