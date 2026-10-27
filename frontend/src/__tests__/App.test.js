@@ -41,8 +41,23 @@ function searchResponse(body) {
   };
 }
 
+const KEYWORDS_RESPONSE = {
+  ok: true,
+  status: 200,
+  json: async () => ['pool', 'garage'],
+};
+
+function routeFetch(searchImpl) {
+  return jest.fn(async (url, options) => {
+    if (String(url).endsWith('/listings/keywords')) return KEYWORDS_RESPONSE;
+    return searchImpl(url, options);
+  });
+}
+
 function sentBodies() {
-  return global.fetch.mock.calls.map(([, options]) => JSON.parse(options.body));
+  return global.fetch.mock.calls
+    .filter(([url]) => String(url).endsWith('/listings/search'))
+    .map(([, options]) => JSON.parse(options.body));
 }
 
 async function runSearch() {
@@ -52,7 +67,7 @@ async function runSearch() {
 
 describe('App results pagination', () => {
   beforeEach(() => {
-    global.fetch = jest.fn(async (url, options) => searchResponse(JSON.parse(options.body)));
+    global.fetch = routeFetch(async (url, options) => searchResponse(JSON.parse(options.body)));
     window.scrollTo = jest.fn();
   });
 
@@ -123,14 +138,14 @@ describe('App results pagination', () => {
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
   });
 
-  it('does not send a page request before a search has run', async () => {
+  it('does not send a search request before a search has run', async () => {
     render(<App />);
     expect(document.querySelector('.page-size-control')).toBeNull();
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(sentBodies()).toHaveLength(0);
   });
 
   it('shows the server error message when a search fails', async () => {
-    global.fetch = jest.fn(async () => ({
+    global.fetch = routeFetch(async () => ({
       ok: true,
       status: 200,
       json: async () => ({ success: false, errorMessage: 'Search is down' }),

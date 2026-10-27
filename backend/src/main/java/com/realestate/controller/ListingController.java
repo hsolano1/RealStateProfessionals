@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,6 +37,11 @@ public class ListingController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(listing);
+    }
+
+    @GetMapping("/listings/keywords")
+    public ResponseEntity<List<String>> getKeywords() {
+        return ResponseEntity.ok(listingService.getAvailableKeywords());
     }
 
     @GetMapping("/health")

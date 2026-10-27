@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class ListingService {
 
+    private static final List<String> SEARCH_KEYWORDS = List.of(
+            "pet friendly", "pets allowed", "pets welcome", "no pets",
+            "pool", "garage", "yard", "kitchen", "waterfront",
+            "metro", "schools", "shopping", "transit", "cul-de-sac");
+
     private final ListingStorage listingStorage;
     private final RankingService rankingService;
 
@@ -83,6 +88,18 @@ public class ListingService {
         return listingStorage.findById(id)
                 .map(this::convertToDTO)
                 .orElse(null);
+    }
+
+    public List<String> getAvailableKeywords() {
+        List<String> descriptions = listingStorage.findAll().stream()
+                .map(Listing::getDescription)
+                .filter(Objects::nonNull)
+                .map(String::toLowerCase)
+                .toList();
+
+        return SEARCH_KEYWORDS.stream()
+                .filter(keyword -> descriptions.stream().anyMatch(description -> description.contains(keyword)))
+                .toList();
     }
 
     private List<Listing> filterListings(List<Listing> listings, SearchRequest request) {

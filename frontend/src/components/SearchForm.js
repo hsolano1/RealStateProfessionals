@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+const KEYWORDS_URL = 'http://localhost:8080/api/v1/listings/keywords';
 
 function SearchForm({ onSearch }) {
   const [formData, setFormData] = useState({
@@ -11,6 +13,22 @@ function SearchForm({ onSearch }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [keywordOptions, setKeywordOptions] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(KEYWORDS_URL)
+      .then(response => (response.ok ? response.json() : []))
+      .then(keywords => {
+        if (!cancelled) setKeywordOptions(keywords);
+      })
+      .catch(() => {
+        if (!cancelled) setKeywordOptions([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -170,14 +188,17 @@ function SearchForm({ onSearch }) {
 
         <div className="form-group">
           <label htmlFor="keyword">Keywords</label>
-          <input
-            type="text"
+          <select
             id="keyword"
             name="keyword"
-            placeholder="e.g., pet friendly, garage"
             value={formData.keyword}
             onChange={handleChange}
-          />
+          >
+            <option value="">Any</option>
+            {keywordOptions.map(keyword => (
+              <option key={keyword} value={keyword}>{keyword}</option>
+            ))}
+          </select>
         </div>
       </div>
 
