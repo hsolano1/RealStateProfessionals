@@ -1,9 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import SearchForm from './components/SearchForm';
 import ResultsList from './components/ResultsList';
 import Pagination from './components/Pagination';
 import LoadingSpinner from './components/LoadingSpinner';
 import './styles/App.css';
+
+const API_URL = 'http://localhost:8080/api/v1/listings/search';
+const PAGE_SIZE_OPTIONS = [3, 5, 10];
+const DEFAULT_PAGE_SIZE = 3;
+
+async function requestPage(params, pageNumber, pageSize) {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ...params, pageNumber, pageSize }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  if (!data.success) {
+    throw new Error(data.errorMessage || 'An error occurred while searching');
+  }
+  return data.data;
+}
 
 function App() {
   const [listings, setListings] = useState([]);
@@ -12,92 +36,43 @@ function App() {
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [lastSearchParams, setLastSearchParams] = useState(null);
 
-  const handleSearch = async (formData) => {
+  const loadPage = async (params, pageNumber, size) => {
     setLoading(true);
     setError(null);
-    setCurrentPage(1);
-    setLastSearchParams({ ...formData, pageNumber: 1 });
 
     try {
-      const searchRequest = {
-        ...formData,
-        pageNumber: 1,
-        pageSize: pageSize,
-      };
-
-      const response = await fetch('http://localhost:8080/api/v1/listings/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchRequest),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setListings(data.data.listings);
-        setTotalCount(data.data.totalCount);
-        setCurrentPage(data.data.pageNumber);
-        setTotalPages(data.data.totalPages);
-      } else {
-        setError(data.errorMessage || 'An error occurred while searching');
-        setListings([]);
-      }
+      const data = await requestPage(params, pageNumber, size);
+      setListings(data.listings);
+      setTotalCount(data.totalCount);
+      setCurrentPage(data.pageNumber);
+      setTotalPages(data.totalPages);
     } catch (err) {
-      setError(`Error: ${err.message}`);
+      setError(err.message);
       setListings([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePageChange = async (newPage) => {
+  const handleSearch = (formData) => {
+    setLastSearchParams(formData);
+    return loadPage(formData, 1, pageSize);
+  };
+
+  const handlePageChange = (newPage) => {
     if (!lastSearchParams) return;
+    loadPage(lastSearchParams, newPage, pageSize);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-    setLoading(true);
-    setError(null);
-
-    try {
-      const searchRequest = {
-        ...lastSearchParams,
-        pageNumber: newPage,
-        pageSize: pageSize,
-      };
-
-      const response = await fetch('http://localhost:8080/api/v1/listings/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchRequest),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        setListings(data.data.listings);
-        setCurrentPage(data.data.pageNumber);
-        setTotalPages(data.data.totalPages);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setError(data.errorMessage || 'An error occurred while fetching results');
-      }
-    } catch (err) {
-      setError(`Error: ${err.message}`);
-    } finally {
-      setLoading(false);
+  const handlePageSizeChange = (event) => {
+    const newSize = Number(event.target.value);
+    setPageSize(newSize);
+    if (lastSearchParams) {
+      loadPage(lastSearchParams, 1, newSize);
     }
   };
 
@@ -133,6 +108,15 @@ function App() {
           <div className="results-container">
             <div className="results-header">
               <p>Found <strong>{totalCount}</strong> properties</p>
+              <label className="page-size-control">
+                Show
+                <select value={pageSize} onChange={handlePageSizeChange}>
+                  {PAGE_SIZE_OPTIONS.map(size => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
+                per page
+              </label>
             </div>
 
             <ResultsList listings={listings} />
